@@ -12,7 +12,6 @@ mongoose.connect("mongodb+srv://nikhil:borat123@nikhil.9dosz.mongodb.net/Project
     useNewUrlParser: true
 })
 
-// mongodb+srv://urajrishu:aUHDB96UyJaq9SB@cluster0.1wief.mongodb.net/sarthak-db
 
 .then( () => console.log("MongoDb is connected"))
 .catch ( err => console.log(err) )

@@ -95,17 +95,7 @@ const loginUser=async function(req,res){
             return res.status(400).send({status:false,message:"Please provide login details"})
     }        
     let {email,password}=req.body
-    if(!isValid(email)){
-        return res.status(400).send({status:false,message:"Email is required"})
-
-    }
-    if(!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))){
-        return res.status(400).send({status:false,message:"Email should be valid"})
-     }
-     if(!isValid(password)){
-        return res.status(400).send({status:false,message:"Password is required"})
-
-    }
+    
 
 
     let data=await userModel.findOne({email:email,password:password})
@@ -113,8 +103,9 @@ const loginUser=async function(req,res){
         res.status(400).send({status:false,message:"Invalid login credentials"})
     } 
     else{
-        let token=jwt.sign({userId:data._id,batch:"uranium"},"Project3", {expiresIn:"30s"})
-        res.status(200).send({status:true,data:{token:token}})
+        let token=jwt.sign({userId:data._id,batch:"uranium"},"Project3", {expiresIn:"3000s"})
+        let date = new Date()
+        res.status(200).send({status:true,data:{token:token,date}})
 
     }
 }
