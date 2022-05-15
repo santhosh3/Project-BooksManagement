@@ -100,47 +100,21 @@ const loginUser=async function(req,res){
 
     let data=await userModel.findOne({email:email,password:password})
     if(!data){
-        res.status(400).send({status:false,message:"Invalid login credentials"})
+        return res.status(400).send({status:false,message:"Invalid login credentials"})
     } 
     else{
         let token=jwt.sign({userId:data._id,batch:"uranium"},"Project3", {expiresIn:"3000s"})
         let date = new Date()
-        res.status(200).send({status:true,data:{token:token,date}})
+        return res.status(200).send({status:true,data:{token:token,date}})
 
     }
 }
 catch(err){
-    res.status(500).send({status:false,data:err.message})
+    return res.status(500).send({status:false,data:err.message})
 }
 
 }
 
-
-const getUser=async function(req,res){
-    try{
-        console.log(1)
-       
-
-    //     const getUser=await userModel.find()
-    //     if(getUser.length===0){
-    //         return res.status(404).send({status:false,message:"No blogs found"})
-    //     }
-    //     return res.status(200).send({status:true,data:getBlogs})
-
-        
-     }
-    catch(err){
-        res.status(500).send({msg:err.message})
-    }
-
-}
-
-// POST /login
-// Allow an user to login with their email and password.
-// On a successful login attempt return a JWT token contatining the userId, exp, iat. The response should be a JSON object like this
-// If the credentials are incorrect return a suitable error message with a valid HTTP status code. The response should be a 
-// JSON object like this
 
 module.exports.createUser= createUser
 module.exports.loginUser=loginUser
-module.exports.getUser= getUser

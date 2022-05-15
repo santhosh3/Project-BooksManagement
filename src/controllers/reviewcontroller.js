@@ -20,6 +20,7 @@ const createReview= async function (req, res) {
     try {
         let body = req.body
         let bookId = req.params.bookId
+      
         let reviewBook = await booksModel.findOne({isDeleted:false,_id:bookId})
         if (reviewBook==null){ return res.status(404).send({status:false,message:"reviewBook is not found"})}
         
@@ -27,35 +28,34 @@ const createReview= async function (req, res) {
         if(!isValidRequestBody(body)){
             return res.status(400).send({status:false,message:"Invalid request parameters please provide user details"})
         }
-        // review , rating , reviewrs name
+        
     
-        const {reviewedBy, rating,review}=req.body
+        const {rating,isDeleted}=req.body
         
         
-        if(!isValid(review)){
-            return res.status(400).send({status:false,message:"review is required"})
+       if(isDeleted==true){
+        return res.status(400).send({status:false,message:" Bad Request"})
 
-        }
+       }
        
-        if(!isValid( rating)){
+        if(!isValid(rating)){
             return res.status(400).send({status:false,message:" rating is required"})
 
         }
-        if(!validRating( rating)){
+        if(!validRating(rating)){
             return res.status(400).send({status:false,message:" rating should be of proper length"})
 
         }
         
          req.body.reviewedAt = new Date()
          req.body.bookId = bookId
-         console.log(reviewBook.reviews)
-  
+         
          const reviewing = await reviewModel.create(req.body)
          reviewBook.reviews=reviewBook.reviews+1
          reviewBook.save()
-
+        const finalReviewData=await reviewModel.findById(reviewing.id).populate('bookId');
          
-return res.status(201).send({ status: true, message: "created successfully", data: reviewing })
+return res.status(201).send({ status: true, message: "created successfully", data: finalReviewData})
 }
     catch (err) {
         res.status(500).send({ status: false, msg: err.message })
@@ -96,7 +96,15 @@ try{
     if (isValid(reviewedBy)) {
         updateBlog.reviewedBy = req.body.reviewedBy
     }
+
+
+    
     if (isValid(rating)) {
+        
+    if(!validRating(rating)){
+        return res.status(200).send({ status: true, data: "Enter a Valid Rating (1 to 5)" })
+    }
+       
         updateBlog.rating = req.body.rating
     }
     if (isValid(review)) {
@@ -150,7 +158,4 @@ res.status(500).send({ status: false, msg: err.message })
 // Delete the related reivew.
 // Update the books document - decrease review count by one
 
-    module.exports.createReview= createReview
-    module.exports.reviewupdate=  reviewupdate
-    module.exports.reviewDelete=  reviewDelete
- 
+    module.exports={createReview,reviewupdate,reviewDelete}
