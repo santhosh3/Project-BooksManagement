@@ -17,7 +17,7 @@ const isValidObjectId = function (objectId) {
 }
 
 const validRating = function (rating) {
-    if (rating < 1 || rating > 5) return false
+    if (rating.length < 1 || rating.length > 5) return false
     return true
 }
 const createReview = async function (req, res) {
